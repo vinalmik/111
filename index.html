@@ -31,21 +31,24 @@
   const engine = new BABYLON.Engine(canvas, true, { 
     preserveDrawingBuffer: true, 
     stencil: true,
-    premultipliedAlpha: true // Chắc chắn làm cho nền trong suốt
+    premultipliedAlpha: true 
   });
 
   const createScene = async () => {
     const scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 0); // Nền trong suốt
 
-    // Cập nhật ánh sáng và đảm bảo không bị tối
-    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-    light.intensity = 0.7; // Giảm bớt độ sáng cho phù hợp
+    // Thêm ánh sáng môi trường và điểm để đảm bảo vật thể đủ sáng
+    const hemisphericLight = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+    hemisphericLight.intensity = 1; // Đảm bảo đủ sáng
+
+    const directionalLight = new BABYLON.DirectionalLight("dirLight", new BABYLON.Vector3(-1, -1, -1), scene);
+    directionalLight.intensity = 1; // Đảm bảo sáng đều
 
     const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
     camera.attachControl(canvas, true);
 
-    // Tắt zoom
+    // Tắt zoom, chỉ cho phép xoay
     camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius;
 
     // Tải mô hình 3D GLB từ GitHub
