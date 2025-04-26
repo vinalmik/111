@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>3D Model</title>
+  <title>3D Model with Transparent Cube</title>
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
   <script src="https://cdn.babylonjs.com/loaders/babylon.glTF2FileLoader.js"></script>
   <style>
@@ -19,16 +19,34 @@
 
   const createScene = async () => {
     const scene = new BABYLON.Scene(engine);
-    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0); // Trong suốt nền
 
+    // Ánh sáng
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+
+    // Camera
     const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
     camera.attachControl(canvas, true);
 
-    // Tắt zoom in/out, giữ khả năng xoay
+    // Tắt zoom in/out, chỉ cho phép xoay
     camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius;
 
-    await BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/vinalmik/111/main/", "1.glb.glb", scene);
+    // Tải mô hình khối cầu (đổi URL và tên file phù hợp với mô hình của bạn)
+    const result = await BABYLON.SceneLoader.ImportMeshAsync(
+      "", 
+      "https://raw.githubusercontent.com/vinalmik/111/main/", // Thay đổi đường dẫn nếu cần
+      "your_sphere_model.glb", // Thay đổi tên file mô hình khối cầu của bạn
+      scene
+    );
+
+    // Tạo khối vuông với chất liệu trong suốt
+    const cube = BABYLON.MeshBuilder.CreateBox("cube", { size: 3 }, scene);
+    const cubeMaterial = new BABYLON.StandardMaterial("cubeMaterial", scene);
+    cube.material = cubeMaterial;
+    cube.material.alpha = 0.2; // Đặt độ trong suốt cho khối vuông
+
+    // Đặt khối vuông bao quanh khối cầu
+    cube.position = new BABYLON.Vector3(0, 0, 0);
 
     return scene;
   };
