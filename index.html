@@ -36,12 +36,15 @@
 
   const createScene = async () => {
     const scene = new BABYLON.Scene(engine);
-    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0); // Background trong suốt
+    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
     const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
     camera.attachControl(canvas, true);
+    camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius;
 
-    camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius; // Không cho zoom
+    // Thêm ánh sáng để thấy vật thể nhưng không làm đổi màu
+    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+    light.intensity = 1;
 
     await BABYLON.SceneLoader.AppendAsync(
       "https://raw.githubusercontent.com/vinalmik/111/main/",
