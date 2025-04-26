@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Transparent 3D Model</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Model Transparent</title>
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
   <script src="https://cdn.babylonjs.com/loaders/babylon.glTF2FileLoader.js"></script>
   <style>
@@ -18,8 +18,8 @@
     #renderCanvas {
       width: 100%;
       height: 100%;
+      background: transparent;
       display: block;
-      background: transparent; /* Đảm bảo background trong suốt */
     }
   </style>
 </head>
@@ -36,36 +36,23 @@
 
   const createScene = async () => {
     const scene = new BABYLON.Scene(engine);
-    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0); // Nền trong suốt
+    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0); // Background trong suốt
 
-    // Thêm ánh sáng môi trường và ánh sáng điểm
-    const hemisphericLight = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-    hemisphericLight.intensity = 1; // Đảm bảo đủ sáng
-
-    const directionalLight = new BABYLON.DirectionalLight("dirLight", new BABYLON.Vector3(-1, -1, -1), scene);
-    directionalLight.intensity = 1; // Đảm bảo sáng đều
-
-    // Camera với điều chỉnh chỉ xoay, không zoom
     const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
     camera.attachControl(canvas, true);
-    camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius;
 
-    // Tải mô hình 3D GLB từ GitHub
-    const result = await BABYLON.SceneLoader.ImportMeshAsync(
-      "", 
-      "https://raw.githubusercontent.com/vinalmik/111/main/", 
-      "1.glb.glb", 
+    camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius; // Không cho zoom
+
+    await BABYLON.SceneLoader.AppendAsync(
+      "https://raw.githubusercontent.com/vinalmik/111/main/",
+      "1.glb.glb",
       scene
     );
-
-    if (result.animationGroups && result.animationGroups.length > 0) {
-      result.animationGroups.forEach(group => group.start(true));
-    }
 
     return scene;
   };
 
-  createScene().then(scene => {
+  createScene().then((scene) => {
     engine.runRenderLoop(() => {
       scene.render();
     });
