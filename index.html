@@ -31,22 +31,24 @@
   const engine = new BABYLON.Engine(canvas, true, { 
     preserveDrawingBuffer: true, 
     stencil: true,
-    premultipliedAlpha: true // ✨ thêm dòng này
+    premultipliedAlpha: true // Chắc chắn làm cho nền trong suốt
   });
 
   const createScene = async () => {
     const scene = new BABYLON.Scene(engine);
-    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0); // ✨ nền trong suốt
+    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0); // Nền trong suốt
+
+    // Cập nhật ánh sáng và đảm bảo không bị tối
+    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+    light.intensity = 0.7; // Giảm bớt độ sáng cho phù hợp
 
     const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
     camera.attachControl(canvas, true);
 
-    // Tắt zoom (wheel) nhưng vẫn giữ xoay
+    // Tắt zoom
     camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius;
 
-    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-
-    // Tải mô hình
+    // Tải mô hình 3D GLB từ GitHub
     const result = await BABYLON.SceneLoader.ImportMeshAsync(
       "", 
       "https://raw.githubusercontent.com/vinalmik/111/main/", 
