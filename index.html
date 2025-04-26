@@ -31,11 +31,11 @@
     // Tắt zoom in/out, chỉ cho phép xoay
     camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius;
 
-    // Tải mô hình khối cầu (đổi URL và tên file phù hợp với mô hình của bạn)
+    // Tải mô hình khối cầu từ link raw GitHub
     const result = await BABYLON.SceneLoader.ImportMeshAsync(
       "", 
-      "https://raw.githubusercontent.com/vinalmik/111/main/", // Thay đổi đường dẫn nếu cần
-      "your_sphere_model.glb", // Thay đổi tên file mô hình khối cầu của bạn
+      "https://raw.githubusercontent.com/vinalmik/111/main/", // Đường dẫn raw
+      "1.glb.glb", // Tên file khối cầu
       scene
     );
 
@@ -43,7 +43,7 @@
     const cube = BABYLON.MeshBuilder.CreateBox("cube", { size: 3 }, scene);
     const cubeMaterial = new BABYLON.StandardMaterial("cubeMaterial", scene);
     cube.material = cubeMaterial;
-    cube.material.alpha = 0.2; // Đặt độ trong suốt cho khối vuông
+    cube.material.alpha = 0.5; // Đặt độ trong suốt cho khối vuông, alpha > 0.2 để nhìn thấy khối
 
     // Đặt khối vuông bao quanh khối cầu
     cube.position = new BABYLON.Vector3(0, 0, 0);
