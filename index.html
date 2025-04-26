@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3D Model Transparent</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3D Model Transparent Background</title>
   <script src="https://cdn.babylonjs.com/babylon.js"></script>
   <script src="https://cdn.babylonjs.com/loaders/babylon.glTF2FileLoader.js"></script>
   <style>
@@ -18,39 +18,48 @@
     #renderCanvas {
       width: 100%;
       height: 100%;
-      background: transparent;
       display: block;
+      background: transparent;
     }
   </style>
 </head>
 <body>
 <canvas id="renderCanvas"></canvas>
+
 <script>
   const canvas = document.getElementById("renderCanvas");
-
   const engine = new BABYLON.Engine(canvas, true, { 
     preserveDrawingBuffer: true, 
-    stencil: true,
+    stencil: true, 
     premultipliedAlpha: true 
   });
 
   const createScene = async () => {
     const scene = new BABYLON.Scene(engine);
-    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0); // Background trong suốt
 
-    const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
+    const camera = new BABYLON.ArcRotateCamera("camera", Math.PI/2, Math.PI/2.5, 5, BABYLON.Vector3.Zero(), scene);
     camera.attachControl(canvas, true);
+
+    // Khóa zoom in/out, chỉ cho xoay
     camera.lowerRadiusLimit = camera.upperRadiusLimit = camera.radius;
 
-    // Thêm ánh sáng để thấy vật thể nhưng không làm đổi màu
+    // Thêm ánh sáng cho mô hình
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 1;
 
-    await BABYLON.SceneLoader.AppendAsync(
-      "https://raw.githubusercontent.com/vinalmik/111/main/",
-      "1.glb.glb",
+    // Load model
+    const result = await BABYLON.SceneLoader.ImportMeshAsync(
+      "", 
+      "https://raw.githubusercontent.com/vinalmik/111/main/", 
+      "1.glb.glb", 
       scene
     );
+
+    // Chạy animation nếu có
+    if (result.animationGroups && result.animationGroups.length > 0) {
+      result.animationGroups.forEach(group => group.start(true));
+    }
 
     return scene;
   };
