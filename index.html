@@ -30,28 +30,30 @@
 
   const createScene = async () => {
     const scene = new BABYLON.Scene(engine);
-    scene.clearColor = new BABYLON.Color4(1, 1, 1, 1); // Set background color to white
+    scene.clearColor = new BABYLON.Color4(1, 1, 1, 1); // Background màu trắng
 
-    // Create camera with no zoom in/out, but keep interaction
+    // Tạo Camera
     const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
-    camera.attachControl(canvas, true); // Allow user interaction
+    camera.attachControl(canvas, true);
 
-    // Disable zoom by restricting camera
-    camera.inputs.clear(); // Remove all default inputs
-    camera.inputs.add(new BABYLON.ArcRotateCameraPointersInput()); // Re-enable pointer input without zoom
+    // ❌ Tắt khả năng Zoom
+    camera.lowerRadiusLimit = camera.radius;
+    camera.upperRadiusLimit = camera.radius;
 
-    // Add light to the scene
+    // Giữ xoay bằng chuột trái
+    // Không cho kéo bằng chuột giữa
+
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
 
-    // Load the 3D model from GitHub raw link
+    // Load model GLB
     const result = await BABYLON.SceneLoader.ImportMeshAsync(
       "", 
-      "https://raw.githubusercontent.com/vinalmik/111/main/", // GitHub raw link
-      "1.glb.glb", // GLB file
+      "https://raw.githubusercontent.com/vinalmik/111/main/", // Link raw Github
+      "1.glb.glb", 
       scene
     );
 
-    // Start animations if available
+    // Nếu có animation thì tự động chạy
     if (result.animationGroups && result.animationGroups.length > 0) {
       result.animationGroups.forEach(group => group.start(true));
     }
